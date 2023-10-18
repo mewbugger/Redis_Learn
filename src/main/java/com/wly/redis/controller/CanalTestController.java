@@ -4,7 +4,7 @@ package com.wly.redis.controller;
 import com.alibaba.otter.canal.client.CanalConnector;
 import com.alibaba.otter.canal.client.CanalConnectors;
 import com.alibaba.otter.canal.protocol.Message;
-import com.wly.redis.domain.RedisCanalClientExample;
+import com.wly.redis.model.RedisCanalClientExample;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

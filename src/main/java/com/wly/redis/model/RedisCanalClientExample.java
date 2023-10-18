@@ -1,4 +1,4 @@
-package com.wly.redis.domain;
+package com.wly.redis.model;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.otter.canal.client.CanalConnector;

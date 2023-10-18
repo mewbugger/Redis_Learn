@@ -4,6 +4,11 @@ spring:
   application:
     name: redis-learn
   # DataSource Config
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/redis_learn?serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: javacppgorust
   # session ????????
   session:
     timeout: 86400
@@ -13,7 +18,8 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
   # redis ??
   redis:
-    host: localhost
+    host: 192.168.81.128
     port: 6379
     password: javacppgorust
+
 

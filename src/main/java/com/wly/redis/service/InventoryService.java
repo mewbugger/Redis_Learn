@@ -2,8 +2,12 @@ package com.wly.redis.service;
 
 
 import cn.hutool.core.util.IdUtil;
+import com.wly.redis.config.RedissonConfig;
 import com.wly.redis.mylock.DistributedLockFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.Redisson;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,8 +32,45 @@ public class InventoryService {
     @Autowired
     private DistributedLockFactory distributedLockFactory;
 
+    @Autowired
+    private RedissonClient redisson;
 
-    //V8.0，实现自动续期功能的完善，后台自定义扫描程序，如果规定时间内没有完成业务逻辑，会调用加钟自动续期的脚本
+
+
+    //引入Redisson对应的官网推荐RedLock算法实现类
+    public String saleByRedisson()
+    {
+        String retMessage = "";
+
+        RLock redissonLock = redisson.getLock("wlyRedisLock");
+        redissonLock.lock();
+        try
+        {
+            //1 查询库存信息
+            String result = stringRedisTemplate.opsForValue().get("inventory001");
+            //2 判断库存是否足够
+            Integer inventoryNumber = result == null ? 0 : Integer.parseInt(result);
+            //3 扣减库存，每次减少一个
+            if(inventoryNumber > 0)
+            {
+                stringRedisTemplate.opsForValue().set("inventory001",String.valueOf(--inventoryNumber));
+                retMessage = "成功卖出一个商品,库存剩余:"+inventoryNumber;
+                System.out.println(retMessage+"\t"+"服务端口号"+port);
+                //暂停120秒钟线程,故意的，演示自动续期的功能。。。。。。
+                try { TimeUnit.SECONDS.sleep(120); } catch (InterruptedException e) { e.printStackTrace(); }
+            }else{
+                retMessage = "商品卖完了,o(╥﹏╥)o";
+            }
+        }finally {
+            if (redissonLock.isLocked() && redissonLock.isHeldByCurrentThread()) {
+                redissonLock.unlock();
+            }
+        }
+        return retMessage+"\t"+"服务端口号"+port;
+    }
+
+
+    //实现自动续期功能的完善，后台自定义扫描程序，如果规定时间内没有完成业务逻辑，会调用加钟自动续期的脚本
     public String sale()
     {
         String retMessage = "";

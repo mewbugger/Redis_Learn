@@ -18,12 +18,13 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
   # redis ??
   redis:
-    host: 192.168.81.128
+    host: 192.168.81.129
     port: 6379
     password: javacppgorust
 
 mybatis:
   mapper-locations: 'classpath*:/**/mapper/**Mapper.xml'
   type-aliases-package: com.wly.redis.model
-
+server:
+  port: 8080
 

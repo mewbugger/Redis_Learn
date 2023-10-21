@@ -66,7 +66,7 @@ public class JHSTaskService {
         }, "t1").start();
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void initJHSAB() {
         log.info("启动AB定时器计划任务天猫聚划算功能模拟.........."+ DateUtil.now());
         // 1用线程模拟定时任务，后台任务定时将mysql里面的参加活动的商品刷新到redis
